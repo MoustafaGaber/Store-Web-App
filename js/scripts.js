@@ -25,6 +25,7 @@ async function init() {
     categories = getCategories(products);
     console.log('categories:', categories);
     fillCategoryFilter(categories)
+    filterAndSortProducts();
     
    ;
   } catch (error) {
@@ -102,29 +103,41 @@ function displayProducts(list) {
 }
 
 
+//----------------fill category filter-
+// --------------------------------------
 //----------------fill category filter---------------------------------------
 function fillCategoryFilter(list) {
-  const select = document.getElementById("categoryFilter");
- 
+  const select = document.getElementById("categoryFilter");
+ 
+  // 1. قراءة القيمة المحفوظة أولاً
+  const savedCategory = localStorage.getItem("preferedcategory");
 
-  // reset the select to default and avoid duplicates
-  select.innerHTML = '<option value="all">All Categories</option>';
+  // 2. مسح القائمة بالكامل
+  select.innerHTML = "";
+  
+  // 3. إضافة خيار "All Categories" أولاً
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "All Categories";
+  select.appendChild(allOption);
+  
+  // 4. إضافة خيارات الفئات الأخرى
+  list.forEach((cat) => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    select.appendChild(option);
+  });
 
-  
-  
-  list.forEach((cat) => {
-    const option = document.createElement("option");
-    
-    option.value = cat;
-    option.textContent = cat;
-    select.appendChild(option);
-     
-  });
- const savedCategory = localStorage.getItem("preferedcategory");
+  // 5. تعيين القيمة المحفوظة مباشرة (سيتم تجاهلها إذا لم تكن موجودة)
   if (savedCategory) {
     select.value = savedCategory;
-  }
+  } else {
+    // 6. ضمان تعيين "all" إذا لم يكن هناك أي شيء محفوظ
+    select.value = "all";
+  }
 }
+
 
 //------------------filter and Sort And search products -----------------------------
 
@@ -135,12 +148,12 @@ const searchInput = document.getElementById("searchInput");
 
 const savedSort = localStorage.getItem("preferedsort");
 
-const savedCategory = localStorage.getItem("preferredCategory");
+// const savedCategory = localStorage.getItem("preferedCategory");
 
 
-if (savedCategory) {
-  categoryFilter.value = savedCategory;
-}
+// if (savedCategory) {
+//   categoryFilter.value = savedCategory;
+// }
 
 if (savedSort) {
   sortFilter.value = savedSort;
@@ -178,11 +191,12 @@ function filterAndSortProducts() {
 // Events
 searchInput.addEventListener("input", filterAndSortProducts);
 categoryFilter.addEventListener("change", () => {
+  //fixed saving category preference
   localStorage.setItem("preferedcategory", categoryFilter.value);
   filterAndSortProducts();
 });
 sortFilter.addEventListener("change", filterAndSortProducts);
 
 // أول تحميل
-filterAndSortProducts();
+
 
