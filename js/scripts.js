@@ -120,22 +120,22 @@ function fillCategoryFilter(list) {
     select.appendChild(option);
      
   });
- 
+ const savedCategory = localStorage.getItem("preferedcategory");
+  if (savedCategory) {
+    select.value = savedCategory;
+  }
 }
 
 //------------------filter and Sort And search products -----------------------------
 
 const categoryFilter = document.getElementById("categoryFilter");
+
 const sortFilter = document.getElementById("sortFilter");
 const searchInput = document.getElementById("searchInput");
-const savedCategory = localStorage.getItem("preferedcategory");
-const savedSort = localStorage.getItem("preferedsort");
-console.log('savedCategory:', savedCategory);
-console.log('savedSort:', savedSort);
 
-if (savedCategory) {
-  categoryFilter.value = savedCategory;
-}
+const savedSort = localStorage.getItem("preferedsort");
+
+
 
 if (savedSort) {
   sortFilter.value = savedSort;
@@ -152,13 +152,13 @@ function filterAndSortProducts() {
   );
 
   // 2) الفئة (Category)
-  const selectedCategory = categoryFilter.value;
+  //const selectedCategory = categoryFilter.value;
 
  
 
-  if (selectedCategory !== "all") {
-    filtered = filtered.filter((p) => p.category === selectedCategory);
-    localStorage.setItem("preferedcategory", selectedCategory);
+  if (categoryFilter.value !== "all") {
+    filtered = filtered.filter((p) => p.category === categoryFilter.value);
+    localStorage.setItem("preferedcategory", categoryFilter.value);
   }
    
   // 3) الترتيب
