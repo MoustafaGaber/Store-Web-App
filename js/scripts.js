@@ -1,4 +1,4 @@
-import { toggelTheme, loader, getProducts } from "./modules.js";
+import { toggelTheme, loader, getProducts,getCategories } from "./modules.js";
 
 // Call the function to set up theme toggling
 toggelTheme();
@@ -8,25 +8,33 @@ const spinner = loader();
 
 //-------------------------------------------------------
 // get products and render them
+
 let products = [];
+let categories = [];
 async function init() {
   try {
     spinner.on();
     const productsRes = await getProducts();
-     products = productsRes.products;
+    products = productsRes.products;
     console.log(products);
     console.log("Products fetched successfully ");
-    // console.log('⭐'.repeat(5));
-    // Render products 
-   
+    // Render products
     displayProducts(products);
+
+    // fill category filter (resets options and populates)
+    categories = getCategories(products);
+    console.log('categories:', categories);
+    fillCategoryFilter(categories)
+    
+   ;
   } catch (error) {
     console.error("Failed to fetch products:", error);
   } finally {
-    setTimeout(() => { spinner.off();}, 1000);
+    setTimeout(() => { spinner.off(); }, 1000);
   }
 }
 init()
+
 // ⭐ Generate Star Rating
 function generateStarRating(rate) {
   let stars = "";
@@ -92,8 +100,87 @@ function displayProducts(list) {
     container.appendChild(productCard);
   });
 }
-//-------------------------------------------------------
 
 
+//----------------fill category filter---------------------------------------
+function fillCategoryFilter(list) {
+  const select = document.getElementById("categoryFilter");
+ 
 
+  // reset the select to default and avoid duplicates
+  select.innerHTML = '<option value="all">All Categories</option>';
+
+  
+  
+  list.forEach((cat) => {
+    const option = document.createElement("option");
+    
+    option.value = cat;
+    option.textContent = cat;
+    select.appendChild(option);
+     
+  });
+ 
+}
+
+//------------------filter and Sort And search products -----------------------------
+
+const categoryFilter = document.getElementById("categoryFilter");
+const sortFilter = document.getElementById("sortFilter");
+const searchInput = document.getElementById("searchInput");
+const savedCategory = localStorage.getItem("preferedcategory");
+const savedSort = localStorage.getItem("preferedsort");
+console.log('savedCategory:', savedCategory);
+console.log('savedSort:', savedSort);
+
+if (savedCategory) {
+  categoryFilter.value = savedCategory;
+}
+
+if (savedSort) {
+  sortFilter.value = savedSort;
+}
+
+// فلترة + بحث + ترتيب
+function filterAndSortProducts() {
+  let filtered = products;
+
+  // 1) البحث
+  const searchValue = searchInput.value.toLowerCase().trim();
+  filtered = filtered.filter((p) =>
+    p.title.toLowerCase().includes(searchValue)
+  );
+
+  // 2) الفئة (Category)
+  const selectedCategory = categoryFilter.value;
+
+ 
+
+  if (selectedCategory !== "all") {
+    filtered = filtered.filter((p) => p.category === selectedCategory);
+    localStorage.setItem("preferedcategory", selectedCategory);
+  }
+   
+  // 3) الترتيب
+  const sortValue = sortFilter.value;
+  localStorage.setItem("preferedsort", sortValue);
+
+  if (sortValue === "price-asc") {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (sortValue === "price-desc") {
+    filtered.sort((a, b) => b.price - a.price);
+  } else if (sortValue === "rating-desc") {
+    filtered.sort((a, b) => b.rating - a.rating);
+  }
+
+  displayProducts(filtered);
+}
+
+// Events
+searchInput.addEventListener("input", filterAndSortProducts);
+categoryFilter.addEventListener("change", filterAndSortProducts);
+sortFilter.addEventListener("change", filterAndSortProducts);
+
+// أول تحميل
+filterAndSortProducts();
 

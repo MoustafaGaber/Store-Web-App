@@ -65,6 +65,7 @@ export const loader = () => {
 
 
 
+
 // Initialize Swiper
 var swiper = new Swiper(".mySwiper", {
       spaceBetween: 30,
@@ -90,6 +91,15 @@ export async function getProducts() {
    
    return data;
 }
+
+//fill selector options
+export const  getCategories=(list)=> {
+  
+  const categories = list.map(p => p.category);
+  return [...new Set(categories)]; // يخلص التكرار
+}
+
+
 
     //show messag alert 
 //     Swal.fire({
