@@ -33,7 +33,7 @@ async function init() {
     setTimeout(() => { spinner.off(); }, 1000);
   }
 }
-init()
+init();
 
 // ⭐ Generate Star Rating
 function generateStarRating(rate) {
@@ -135,7 +135,12 @@ const searchInput = document.getElementById("searchInput");
 
 const savedSort = localStorage.getItem("preferedsort");
 
+const savedCategory = localStorage.getItem("preferredCategory");
 
+
+if (savedCategory) {
+  categoryFilter.value = savedCategory;
+}
 
 if (savedSort) {
   sortFilter.value = savedSort;
@@ -151,14 +156,8 @@ function filterAndSortProducts() {
     p.title.toLowerCase().includes(searchValue)
   );
 
-  // 2) الفئة (Category)
-  //const selectedCategory = categoryFilter.value;
-
- 
-
   if (categoryFilter.value !== "all") {
     filtered = filtered.filter((p) => p.category === categoryFilter.value);
-    localStorage.setItem("preferedcategory", categoryFilter.value);
   }
    
   // 3) الترتيب
@@ -178,7 +177,10 @@ function filterAndSortProducts() {
 
 // Events
 searchInput.addEventListener("input", filterAndSortProducts);
-categoryFilter.addEventListener("change", filterAndSortProducts);
+categoryFilter.addEventListener("change", () => {
+  localStorage.setItem("preferedcategory", categoryFilter.value);
+  filterAndSortProducts();
+});
 sortFilter.addEventListener("change", filterAndSortProducts);
 
 // أول تحميل
