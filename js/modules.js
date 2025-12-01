@@ -49,13 +49,18 @@ if (themeToggle) {
 }
  //loder
 export const loader = () => {
- 
-const spinner = document.getElementById("loader");
-   
-  const active={"on": spinner.classList.add("active"), "off": spinner.classList.remove("active")}
-  return active;
+  const spinner = document.getElementById("loader");
+  return {
+    //methods object
+    on: function() {
+      spinner?.classList.add("active");
+    },
+    //shorthand of off: function()
+    off() {
+      spinner?.classList.remove("active");
+    },
+  };
 }
-
 
 
 

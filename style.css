@@ -281,7 +281,7 @@ body.dark .products-cards .add-to-cart {
 }
 
   .loader {
-            opacity: 0;
+            display: none;
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -299,7 +299,7 @@ body.dark .products-cards .add-to-cart {
             animation: prixClipFix 2s infinite linear;
           }
            .loader.active{
-            opacity: 1;
+            display: block;
            }
           @keyframes prixClipFix {
               0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
