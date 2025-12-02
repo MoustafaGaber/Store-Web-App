@@ -45,7 +45,13 @@ body.dark .cart-headerss {
   border: 1px solid red;
 
 }
-   
+ 
+@media (max-width: 988px) {
+  .container{
+    display: flex;
+    flex-direction: column;
+  }
+}
 body.dark  .cart-itemss {
              
             border-bottom: 1px solid rgb(67, 67, 67);

@@ -41,6 +41,12 @@ async function init() {
     } 
   } catch (error) {
     console.error("Failed to fetch products:", error);
+    Swal.fire({
+    icon: "error",
+    title: "Error...",
+    text: "حدثت مشلكة اثناء جلب البيانات!",
+    footer: '<a href="#">Contact Us?</a>'
+});
   } finally {
     setTimeout(() => { spinner.off(); }, 1000);
   }
@@ -70,12 +76,16 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // safely update cart count in the navbar (may not exist on all pages)
 function updateCartCount() {
+  //guard operator
   const countElement = document.getElementById("cart-count");
   if (!countElement) return;
   countElement.textContent = String(cart.length);
-}
+ }
+
+//======================== Add to Cart Logic ==========================
 
 // use a function declaration so it is available when attaching listeners
+
 function addToCart(id) {
   const product = products.find((p) => p.id === id);
   if (!product) return;
