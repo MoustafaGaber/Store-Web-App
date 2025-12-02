@@ -1,3 +1,16 @@
+// immediately restore theme from localStorage to keep visual consistency across pages
+  (function() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.body.classList.add('dark');
+      document.body.classList.remove('light');
+    } else {
+      document.body.classList.add('light');
+      document.body.classList.remove('dark');
+    }
+  })();
+
+
 
 // ==================================== Cart Logic =============================================================
 
@@ -7,9 +20,8 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // تحديث عداد السلة
 const updateCartCount = () => {
   const countElement = document.getElementById("cart-count");
- 
-    countElement.textContent = cart.length;
-
+  if (!countElement) return; // guard: may not exist on all pages
+  countElement.textContent = cart.length;
 };
 
 // عناصر DOM
