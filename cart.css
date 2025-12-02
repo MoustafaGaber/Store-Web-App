@@ -100,6 +100,9 @@ body.dark  .cart-itemss {
         }
 
         .cart-headerss {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 20px;
             background-color: var(--card-bg);
             border-bottom: 1px solid var(--card-border);
             font-weight: 600;
