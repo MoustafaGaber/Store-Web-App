@@ -1,5 +1,6 @@
 import { toggelTheme, loader, getProducts,getCategories } from "./modules.js";
 
+
 // Call the function to set up theme toggling
 toggelTheme();
 
@@ -63,6 +64,48 @@ function generateStarRating(rate) {
   return stars;
 }
 
+// ----------------- Cart utilities -------------------
+// initialize cart
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// safely update cart count in the navbar (may not exist on all pages)
+function updateCartCount() {
+  const countElement = document.getElementById("cart-count");
+  if (!countElement) return;
+  countElement.textContent = String(cart.length);
+}
+
+// use a function declaration so it is available when attaching listeners
+function addToCart(id) {
+  const product = products.find((p) => p.id === id);
+  if (!product) return;
+
+  const existing = cart.find(item => item.id === id);
+  if (existing) {
+    Swal.fire({
+      title: "المنتج موجود بالفعل",
+      text: `${product.title} موجود بالفعل داخل السلة`,
+      icon: "info",
+      confirmButtonText: "تمام",
+    });
+    return;
+  }
+
+  cart.push({...product, quantity: 1});
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+
+  Swal.fire({
+    title: "تم إضافة المنتج!",
+    text: `${product.title} تمت إضافته إلى السلة بنجاح`,
+    icon: "success",
+    confirmButtonText: "تمام",
+  });
+}
+
+// make sure to show current count on page load
+updateCartCount();
+
 // Retreive Data
 function displayProducts(list) {
   // guard: skip if no container exists
@@ -102,7 +145,8 @@ function displayProducts(list) {
         <div class="product-price">$${product.price}</div>
 
         <div class="product-actions">
-          <button class="add-to-cart">
+          <!-- removed inline onclick and added data attribute instead -->
+          <button class="add-to-cart" >
             <i class="fas fa-shopping-cart"></i> Add to Cart
           </button>
           <button class="wishlist-btn">
@@ -113,6 +157,12 @@ function displayProducts(list) {
     `;
 
     container.appendChild(productCard);
+
+    // attach event listener to the button (if present)
+    const addBtn = productCard.querySelector(".add-to-cart");
+    if (addBtn) {
+      addBtn.addEventListener("click", () => addToCart(product.id));
+    }
   });
 }
 
@@ -220,7 +270,5 @@ if (categoryFilter) categoryFilter.addEventListener("change", () => {
   filterAndSortProducts();
 });
 if (sortFilter) sortFilter.addEventListener("change", filterAndSortProducts);
-
-// Removed unguarded initial filterAndSortProducts() call at bottom; already applied in init
 
 
