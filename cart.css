@@ -383,4 +383,144 @@ body.dark  .cart-itemss {
         .add-to-cart-btn:hover {
             background-color: #ff5252;
         }
- 
+
+        /* Tablet layout - keep summary visible to the side but narrow it */
+@media (max-width: 992px) {
+  .cart-layouts {
+    grid-template-columns: 1fr 320px; /* slightly narrower summary */
+    gap: 20px;
+  }
+
+  .cart-summary {
+    position: static;
+    top: unset;
+    width: 100%;
+  }
+
+  .cart-items {
+    margin-bottom: 0;
+  }
+}
+
+/* Mobile layout - single column stack, collapse headers and use labels */
+@media (max-width: 768px) {
+  .cart-layouts {
+    grid-template-columns: 1fr; /* stacked layout */
+    gap: 20px;
+  }
+
+  /* Hide the table-like headers on small devices */
+  .cart-headerss {
+    display: none;
+  }
+
+  /* Make each cart item a vertical stack of rows on mobile */
+  .cart-itemss {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+    background: transparent; /* maintain top-level card look */
+    border-radius: 8px;
+    align-items: start;
+  }
+
+  /* Break out each column into a stacked row and show small label */
+  .cart-itemss > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: none;
+  }
+
+  .cart-itemss > div::before {
+    display: inline-block;
+    font-weight: 600;
+    color: #777;
+    margin-right: 8px;
+    min-width: 85px;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .cart-itemss > div:nth-child(1)::before { content: "Product"; }
+  .cart-itemss > div:nth-child(2)::before { content: "Price"; }
+  .cart-itemss > div:nth-child(3)::before { content: "Quantity"; }
+  .cart-itemss > div:nth-child(4)::before { content: ""; } /* remove label for the remove action */
+
+  /* Adjust product info row */
+  .product-infoo {
+    gap: 12px;
+    align-items: center;
+  }
+
+  .product-imagee {
+    width: 64px;
+    height: 64px;
+  }
+
+  .product-detailss h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .product-detailss p {
+    font-size: 12px;
+    color: #888;
+  }
+
+  /* Quantity control - smaller and tighter */
+  .quantity-controlss {
+    gap: 6px;
+  }
+
+  .quantity-btns {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .quantity-inputs {
+    width: 48px;
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+
+  /* Price and remove button tweaks */
+  .pricee {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+
+  .remove-btns {
+    font-size: 20px;
+    color: #ff6b6b;
+    background: none;
+  }
+
+  /* Move cart summary below the items and take full width */
+  .cart-summary {
+    position: static;
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+/* Even smaller screens - adjust paddings and font sizes */
+@media (max-width: 420px) {
+  .product-imagee {
+    width: 56px;
+    height: 56px;
+  }
+
+  .product-detailss h3 {
+    font-size: 14px;
+  }
+
+  .product-detailss p {
+    font-size: 12px;
+  }
+}
