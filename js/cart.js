@@ -81,6 +81,19 @@ function renderCart() {
   updateSummary();
   updateCartCount();
 }
+  function updateItemRow(index) {
+  const row = cartContainer.children[index];
+  if (!row) return;
+
+  // تحديث كمية الإدخال
+  const quantityInput = row.querySelector(".quantity-inputs");
+  quantityInput.value = cart[index].quantity;
+
+  // تحديث السعر الكلّي
+  updateSummary();
+  
+}
+
 
 // تحديث الملخص
 function updateSummary() {
@@ -100,12 +113,18 @@ function decrease(index) {
   } else {
     cart[index].quantity = 1;
   }
+    updateItemRow(index);
+
   saveCart();
+  
 }
 
 function increase(index) {
   cart[index].quantity = cart[index].quantity  + 1;
+    updateItemRow(index);
+
   saveCart();
+     
 }
 
 // حذف عنصر من السلة
@@ -122,6 +141,7 @@ function removeItem(index) {
     if (result.isConfirmed) {
       cart.splice(index, 1);
       saveCart();
+      renderCart();
       Swal.fire({
         title: "تم الحذف!",
         text: `${product.title} تم حذفه من السلة`,
@@ -132,10 +152,12 @@ function removeItem(index) {
   });
 }
 
+
+
 // حفظ cart في localStorage وعرضها
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
+ // renderCart();
 }
 
 // تنفيذ أول مرة عند تحميل الصفحة
