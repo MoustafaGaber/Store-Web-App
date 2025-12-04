@@ -36,7 +36,7 @@ async function init() {
     // Render products only if container present
     if (container) {
       // Use filterAndSortProducts to apply saved sort/filter/search before rendering
-      applySavedState();
+      //applySavedState();
       filterAndSortProducts();
     } 
   } catch (error) {
@@ -218,8 +218,10 @@ const savedSort = localStorage.getItem("preferedsort");
 if (sortFilter && savedSort) {
   sortFilter.value = savedSort;
 }
-
+/*
 // Helper: apply saved category/sort values (safe)
+// to be called on page load and fix localStorage values
+
 function applySavedState() {
   const savedCat = localStorage.getItem("preferedcategory");
   const savedSortVal = localStorage.getItem("preferedsort");
@@ -231,15 +233,17 @@ function applySavedState() {
     sortFilter.value = savedSortVal;
   }
 }
-
+*/
 // فلترة + بحث + ترتيب
 function filterAndSortProducts() {
-  if (!Array.isArray(products)) return;
+  // if (!Array.isArray(products)) return;
+  if(!products) return;
 
   let filtered = products;
 
   // 1) البحث
   const searchValue = searchInput ? searchInput.value.toLowerCase().trim() : "";
+  // const searchValue=searchInput?.value?.toLowerCase()?.trim() ?? "";
   filtered = filtered.filter((p) =>
     p.title.toLowerCase().includes(searchValue)
   );
