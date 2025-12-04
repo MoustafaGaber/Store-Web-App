@@ -4,9 +4,6 @@ import { toggelTheme, loader, getProducts,getCategories } from "./modules.js";
 // Call the function to set up theme toggling
 toggelTheme();
 
-// Get spinner controller
-const spinner = loader();
-
 // --- Query DOM once and reuse (may be null on cart page) ---
 const container = document.getElementById("products-container");
 const categoryFilter = document.getElementById("categoryFilter");
@@ -18,9 +15,10 @@ const searchInput = document.getElementById("searchInput");
 
 let products = [];
 let categories = [];
+
 async function init() {
   try {
-    spinner.on();
+    loader().on();
     const productsRes = await getProducts();
     products = productsRes.products;
     // console.log(products);
@@ -48,7 +46,7 @@ async function init() {
     footer: '<a href="#">Contact Us?</a>'
 });
   } finally {
-    setTimeout(() => { spinner.off(); }, 1000);
+    setTimeout(() => { loader().off(); }, 1000);
   }
 }
 init();
@@ -89,7 +87,7 @@ function updateCartCount() {
 function addToCart(id) {
   const product = products.find((p) => p.id === id);
   if (!product) return;
-
+   //check if already in cart before adding again
   const existing = cart.find(item => item.id === id);
   if (existing) {
     Swal.fire({
@@ -100,9 +98,11 @@ function addToCart(id) {
     });
     return;
   }
-
+  //if not existing, add to cart
   cart.push({...product, quantity: 1});
+  // Save to localStorage
   localStorage.setItem("cart", JSON.stringify(cart));
+  // Update cart count in navbar
   updateCartCount();
 
   Swal.fire({
@@ -116,7 +116,7 @@ function addToCart(id) {
 // make sure to show current count on page load
 updateCartCount();
 
-// Retreive Data
+// render products function
 function displayProducts(list) {
   // guard: skip if no container exists
   if (!container) {
@@ -155,7 +155,7 @@ function displayProducts(list) {
         <div class="product-price">$${product.price}</div>
 
         <div class="product-actions">
-          <!-- removed inline onclick and added data attribute instead -->
+          <!-- removed inline onclick and added data attribute instead if needed-->
           <button class="add-to-cart" >
             <i class="fas fa-shopping-cart"></i> Add to Cart
           </button>
@@ -235,6 +235,7 @@ function applySavedState() {
 }
 */
 // فلترة + بحث + ترتيب
+//this is main function without it no rendering will happen
 function filterAndSortProducts() {
   // if (!Array.isArray(products)) return;
   if(!products) return;
@@ -253,6 +254,10 @@ function filterAndSortProducts() {
   if (selectedCategoryVal !== "all") {
     filtered = filtered.filter((p) => p.category === selectedCategoryVal);
   }
+   // save category if user changed it
+  if (categoryFilter) {
+    localStorage.setItem("preferedcategory", categoryFilter.value);
+  } 
 
   // 3) الترتيب
   const sortValue = sortFilter ? sortFilter.value : "featured";
@@ -266,10 +271,7 @@ function filterAndSortProducts() {
     filtered.sort((a, b) => b.rating - a.rating);
   }
 
-  // save category if user changed it
-  if (categoryFilter) {
-    localStorage.setItem("preferedcategory", categoryFilter.value);
-  }
+  
 
   // display only if container exists
   if (container) {
